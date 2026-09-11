@@ -50,7 +50,7 @@
 
     body {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
     }
 
@@ -62,7 +62,7 @@
       width: 100%;
       max-width: 560px;
 
-      padding: 18px 22px;
+      padding: 28px 22px 18px;
 
       display: flex;
       justify-content: center;
@@ -109,8 +109,6 @@
       border: 1px solid var(--panel-border);
       border-radius: 11px;
     }
-
-    /* horizontal split line */
 
     .clock-panel::after {
       content: "";
@@ -229,14 +227,14 @@
     }
 
     /* ==============================
-       SMALL NOTION EMBEDS
+       SMALL EMBEDS
     ============================== */
 
     @media (max-width: 420px) {
       .widget {
         gap: 17px;
 
-        padding: 12px 8px;
+        padding: 22px 8px 12px;
       }
 
       .clock-area {
@@ -299,18 +297,13 @@
   </style>
 </head>
 
-
 <body>
 
   <main class="widget">
 
-    <!-- CLOCK -->
-
     <section class="clock-area">
 
       <div class="clock">
-
-        <!-- HOUR -->
 
         <div class="clock-panel">
 
@@ -331,15 +324,13 @@
         </div>
 
 
-        <!-- MINUTE -->
-
         <div class="clock-panel">
 
           <div
             class="number"
             id="minute"
           >
-            45
+            59
           </div>
 
           <div
@@ -354,8 +345,6 @@
       </div>
 
 
-      <!-- DATE -->
-
       <div
         class="date"
         id="date"
@@ -365,8 +354,6 @@
 
     </section>
 
-
-    <!-- BEAT COUNT -->
 
     <section class="beat-section">
 
@@ -393,14 +380,11 @@
   </main>
 
 
-
   <script>
     const TIME_ZONE = "Asia/Jakarta";
 
 
-    /* ==============================
-       BEAT COUNT
-    ============================== */
+    /* BEAT COUNT */
 
     const params =
       new URLSearchParams(window.location.search);
@@ -419,9 +403,7 @@
 
 
 
-    /* ==============================
-       CLOCK
-    ============================== */
+    /* CLOCK */
 
     function updateClock() {
       const now = new Date();
@@ -448,15 +430,11 @@
         )?.value;
 
 
-      /* HOUR */
-
       document
         .getElementById("hour")
         .textContent =
         getPart("hour");
 
-
-      /* MINUTE */
 
       document
         .getElementById("minute")
@@ -464,15 +442,11 @@
         getPart("minute");
 
 
-      /* AM / PM */
-
       document
         .getElementById("ampm")
         .textContent =
         getPart("dayPeriod");
 
-
-      /* WEEKDAY */
 
       const weekday =
         new Intl.DateTimeFormat(
@@ -492,8 +466,6 @@
         weekday;
 
 
-      /* MONTH */
-
       const month =
         new Intl.DateTimeFormat(
           "en-US",
@@ -506,8 +478,6 @@
         .toUpperCase();
 
 
-      /* DAY */
-
       const day =
         new Intl.DateTimeFormat(
           "en-US",
@@ -519,8 +489,6 @@
         .format(now);
 
 
-      /* YEAR */
-
       const year =
         new Intl.DateTimeFormat(
           "en-US",
@@ -531,8 +499,6 @@
         )
         .format(now);
 
-
-      /* DATE */
 
       document
         .getElementById("date")
