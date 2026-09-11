@@ -62,7 +62,7 @@
       width: 100%;
       max-width: 560px;
 
-      padding: 28px 22px 18px;
+      padding: 0 22px 18px;
 
       display: flex;
       justify-content: center;
@@ -234,7 +234,7 @@
       .widget {
         gap: 17px;
 
-        padding: 22px 8px 12px;
+        padding: 0 8px 12px;
       }
 
       .clock-area {
@@ -311,7 +311,7 @@
             class="number"
             id="hour"
           >
-            01
+            02
           </div>
 
           <div
@@ -323,14 +323,13 @@
 
         </div>
 
-
         <div class="clock-panel">
 
           <div
             class="number"
             id="minute"
           >
-            59
+            02
           </div>
 
           <div
@@ -344,7 +343,6 @@
 
       </div>
 
-
       <div
         class="date"
         id="date"
@@ -354,11 +352,9 @@
 
     </section>
 
-
     <section class="beat-section">
 
       <div class="divider"></div>
-
 
       <div class="beat">
 
@@ -379,12 +375,12 @@
 
   </main>
 
-
   <script>
     const TIME_ZONE = "Asia/Jakarta";
 
-
-    /* BEAT COUNT */
+    /* ==============================
+       BEAT COUNT
+    ============================== */
 
     const params =
       new URLSearchParams(window.location.search);
@@ -401,52 +397,44 @@
       .getElementById("beatCount")
       .textContent = beatCount;
 
-
-
-    /* CLOCK */
+    /* ==============================
+       CLOCK
+    ============================== */
 
     function updateClock() {
       const now = new Date();
-
 
       const parts =
         new Intl.DateTimeFormat(
           "en-US",
           {
             timeZone: TIME_ZONE,
-
             hour: "2-digit",
             minute: "2-digit",
-
             hour12: true
           }
         )
         .formatToParts(now);
-
 
       const getPart = type =>
         parts.find(
           part => part.type === type
         )?.value;
 
-
       document
         .getElementById("hour")
         .textContent =
         getPart("hour");
-
 
       document
         .getElementById("minute")
         .textContent =
         getPart("minute");
 
-
       document
         .getElementById("ampm")
         .textContent =
         getPart("dayPeriod");
-
 
       const weekday =
         new Intl.DateTimeFormat(
@@ -459,12 +447,10 @@
         .format(now)
         .toUpperCase();
 
-
       document
         .getElementById("weekday")
         .textContent =
         weekday;
-
 
       const month =
         new Intl.DateTimeFormat(
@@ -477,7 +463,6 @@
         .format(now)
         .toUpperCase();
 
-
       const day =
         new Intl.DateTimeFormat(
           "en-US",
@@ -487,7 +472,6 @@
           }
         )
         .format(now);
-
 
       const year =
         new Intl.DateTimeFormat(
@@ -499,13 +483,11 @@
         )
         .format(now);
 
-
       document
         .getElementById("date")
         .textContent =
         `${month} ${day}, ${year}`;
     }
-
 
     updateClock();
 
