@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>CPO Widget</title>
 
   <style>
     :root {
-      --text: #f4f1eb;
-      --muted: #b7aa9b;
-      --soft: rgba(255, 255, 255, 0.05);
-      --soft-border: rgba(255, 255, 255, 0.08);
-      --accent: #7a4c2b;
+      --bg: #191919;
+      --panel: #242424;
+      --panel-border: #343434;
+
+      --text: #f1f1ef;
+      --muted: #9f9a94;
+
+      --accent: #704526;
     }
 
     * {
@@ -24,17 +25,22 @@
     html,
     body {
       margin: 0;
+      padding: 0;
+
       width: 100%;
       height: 100%;
-      background: transparent;
+
       overflow: hidden;
+
+      background: var(--bg);
+      color: var(--text);
+
       font-family:
         Inter,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      color: var(--text);
     }
 
     body {
@@ -45,274 +51,378 @@
 
     .widget {
       width: 100%;
-      max-width: 430px;
-      padding: 12px 10px;
+      max-width: 500px;
+
+      padding: 20px;
+
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: flex-start;
-      gap: 22px;
+
+      gap: 26px;
     }
 
-    .time-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
+    /* CLOCK */
 
-    .clock-stack {
+    .clock-area {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+
+      gap: 11px;
     }
 
-    .clock-panels {
+    .clock {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .panel {
-      width: 104px;
-      height: 120px;
-      border-radius: 14px;
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.05) 0%,
-          rgba(255,255,255,0.03) 49%,
-          rgba(0,0,0,0.18) 50%,
-          rgba(255,255,255,0.02) 100%
-        );
-      border: 1px solid var(--soft-border);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.03),
-        0 8px 20px rgba(0,0,0,0.18);
+    .clock-panel {
+      position: relative;
+
+      width: 92px;
+      height: 112px;
+
+      background: var(--panel);
+
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+
+      overflow: hidden;
 
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 14px 14px 12px;
-      position: relative;
-      overflow: hidden;
+
+      padding: 13px;
     }
 
-    .panel::after {
+    .clock-panel::after {
       content: "";
+
       position: absolute;
+
       left: 0;
       right: 0;
       top: 50%;
+
       height: 1px;
-      background: rgba(255,255,255,0.10);
+
+      background: rgba(255,255,255,0.07);
     }
 
-    .digit {
-      font-size: 68px;
+    .number {
+      font-size: 58px;
       line-height: 0.9;
-      font-weight: 800;
-      letter-spacing: -4px;
+
+      font-weight: 700;
+      letter-spacing: -3px;
+
       font-variant-numeric: tabular-nums;
     }
 
-    .mini-label {
+    .panel-label {
       margin-top: 10px;
-      font-size: 14px;
-      line-height: 1;
+
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--text);
+
+      letter-spacing: 0.15em;
+
+      color: var(--muted);
     }
 
     .date {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
-      letter-spacing: 0.22em;
+
+      letter-spacing: 0.18em;
+
       color: var(--muted);
-      text-transform: uppercase;
+
       white-space: nowrap;
     }
 
-    .beat-wrap {
+    /* BEAT COUNT */
+
+    .beat-section {
       display: flex;
       align-items: center;
-      gap: 18px;
-      flex-shrink: 0;
+
+      gap: 25px;
     }
 
     .divider {
       width: 1px;
-      height: 95px;
+      height: 91px;
+
       background: var(--accent);
-      opacity: 0.95;
     }
 
-    .beat-box {
+    .beat {
+      min-width: 78px;
+
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-width: 58px;
     }
 
-    .beat-count {
-      font-size: 58px;
+    .beat-number {
+      font-size: 50px;
       line-height: 0.9;
-      font-weight: 700;
+
+      font-weight: 600;
+
       letter-spacing: -2px;
+
       font-variant-numeric: tabular-nums;
-      color: var(--text);
     }
 
     .beat-label {
-      margin-top: 12px;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
+      margin-top: 14px;
+
       color: var(--muted);
-      text-transform: uppercase;
+
+      font-size: 8px;
+      font-weight: 600;
+
+      letter-spacing: 0.19em;
+
       white-space: nowrap;
-      text-align: center;
     }
+
+    /* SMALL NOTION EMBEDS */
 
     @media (max-width: 420px) {
       .widget {
-        gap: 14px;
-        padding: 10px 6px;
+        gap: 16px;
+        padding: 12px;
       }
 
-      .clock-panels {
-        gap: 8px;
+      .clock-panel {
+        width: 76px;
+        height: 96px;
+
+        padding: 10px;
       }
 
-      .panel {
-        width: 84px;
-        height: 100px;
-        border-radius: 12px;
-        padding: 12px 10px 10px;
+      .number {
+        font-size: 47px;
       }
 
-      .digit {
-        font-size: 54px;
-        letter-spacing: -3px;
-      }
-
-      .mini-label {
-        font-size: 12px;
+      .beat-section {
+        gap: 16px;
       }
 
       .divider {
-        height: 82px;
+        height: 78px;
       }
 
-      .beat-count {
-        font-size: 46px;
-      }
-
-      .date,
-      .beat-label {
-        font-size: 9px;
+      .beat-number {
+        font-size: 41px;
       }
     }
   </style>
 </head>
+
+
 <body>
+
   <main class="widget">
-    <section class="time-group">
-      <div class="clock-stack">
-        <div class="clock-panels">
-          <div class="panel">
-            <div class="digit" id="hour">01</div>
-            <div class="mini-label" id="ampm">PM</div>
+
+    <section class="clock-area">
+
+      <div class="clock">
+
+        <div class="clock-panel">
+          <div class="number" id="hour">
+            01
           </div>
 
-          <div class="panel">
-            <div class="digit" id="minute">10</div>
-            <div class="mini-label" id="weekday">SAT</div>
+          <div class="panel-label" id="ampm">
+            AM
           </div>
         </div>
 
-        <div class="date" id="date">
-          SEP 12, 2026
+
+        <div class="clock-panel">
+          <div class="number" id="minute">
+            33
+          </div>
+
+          <div class="panel-label" id="weekday">
+            SAT
+          </div>
         </div>
+
       </div>
+
+
+      <div class="date" id="date">
+        SEP 12, 2026
+      </div>
+
     </section>
 
-    <section class="beat-wrap">
+
+    <section class="beat-section">
+
       <div class="divider"></div>
 
-      <div class="beat-box">
-        <div class="beat-count" id="beatCount">8</div>
-        <div class="beat-label">BEAT COUNT</div>
+
+      <div class="beat">
+
+        <div class="beat-number" id="beatCount">
+          8
+        </div>
+
+        <div class="beat-label">
+          BEAT COUNT
+        </div>
+
       </div>
+
     </section>
+
   </main>
+
+
 
   <script>
     const TIME_ZONE = "Asia/Jakarta";
 
-    // beat count from URL
-    const params = new URLSearchParams(window.location.search);
-    const beatParam = Number(params.get("beats"));
+
+    /* BEAT COUNT */
+
+    const params =
+      new URLSearchParams(window.location.search);
+
+    const value =
+      Number(params.get("beats"));
+
     const beatCount =
-      Number.isFinite(beatParam) && beatParam >= 0
-        ? Math.floor(beatParam)
+      Number.isFinite(value) && value >= 0
+        ? Math.floor(value)
         : 8;
 
-    document.getElementById("beatCount").textContent = beatCount;
+    document
+      .getElementById("beatCount")
+      .textContent = beatCount;
+
+
+
+    /* CLOCK */
 
     function updateClock() {
+
       const now = new Date();
 
-      const hour24 = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        hour: "2-digit",
-        hour12: false
-      }).format(now);
 
-      const minute = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        minute: "2-digit"
-      }).format(now);
+      const parts =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
 
-      const hour12 = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        hour: "2-digit",
-        hour12: true
-      }).format(now);
+            hour: "2-digit",
+            minute: "2-digit",
 
-      const ampm = hour12.toUpperCase().includes("AM") ? "AM" : "PM";
+            hour12: true
+          }
+        )
+        .formatToParts(now);
 
-      const weekday = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        weekday: "short"
-      }).format(now).toUpperCase();
 
-      const month = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        month: "short"
-      }).format(now).toUpperCase();
+      const getPart = type =>
+        parts.find(
+          part => part.type === type
+        )?.value;
 
-      const day = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        day: "2-digit"
-      }).format(now);
 
-      const year = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        year: "numeric"
-      }).format(now);
+      document
+        .getElementById("hour")
+        .textContent =
+        getPart("hour");
 
-      document.getElementById("hour").textContent = hour24;
-      document.getElementById("minute").textContent = minute;
-      document.getElementById("ampm").textContent = ampm;
-      document.getElementById("weekday").textContent = weekday;
-      document.getElementById("date").textContent = `${month} ${day}, ${year}`;
+
+      document
+        .getElementById("minute")
+        .textContent =
+        getPart("minute");
+
+
+      document
+        .getElementById("ampm")
+        .textContent =
+        getPart("dayPeriod");
+
+
+      const weekday =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            weekday: "short"
+          }
+        )
+        .format(now)
+        .toUpperCase();
+
+
+      document
+        .getElementById("weekday")
+        .textContent =
+        weekday;
+
+
+      const month =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            month: "short"
+          }
+        )
+        .format(now)
+        .toUpperCase();
+
+
+      const day =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            day: "2-digit"
+          }
+        )
+        .format(now);
+
+
+      const year =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            year: "numeric"
+          }
+        )
+        .format(now);
+
+
+      document
+        .getElementById("date")
+        .textContent =
+        `${month} ${day}, ${year}`;
     }
 
+
     updateClock();
-    setInterval(updateClock, 1000);
+
+    setInterval(
+      updateClock,
+      1000
+    );
   </script>
+
 </body>
 </html>
