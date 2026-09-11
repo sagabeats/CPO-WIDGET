@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -14,13 +15,23 @@
     :root {
       --bg: #191919;
 
-      --panel: #222222;
-      --panel-border: #383838;
+      --panel-top: #262422;
+      --panel-bottom: #202020;
+
+      --panel-border: #3b3936;
 
       --text: #f1f1ef;
-      --muted: #b0a69d;
+      --muted: #b5aaa0;
 
       --accent: #704526;
+
+      --panel-width: 112px;
+      --panel-height: 132px;
+
+      --number-size: 68px;
+
+      --meta-size: 10px;
+      --meta-spacing: 0.18em;
     }
 
     * {
@@ -29,11 +40,11 @@
 
     html,
     body {
-      margin: 0;
-      padding: 0;
-
       width: 100%;
       height: 100%;
+
+      margin: 0;
+      padding: 0;
 
       overflow: hidden;
 
@@ -54,387 +65,506 @@
       justify-content: center;
     }
 
-    /* ==============================
-       MAIN WIDGET
-    ============================== */
+    /* ========================================
+       OUTER WIDGET
+    ======================================== */
 
     .widget {
       width: 100%;
       max-width: 560px;
 
-      padding: 0 22px 18px;
+      /*
+        Deliberate top offset:
+        aligns visual content with the brown
+        QUICK NAVIGATOR header beside it.
+      */
+      padding: 20px 18px 16px;
 
       display: flex;
       justify-content: center;
-      align-items: center;
-
-      gap: 34px;
     }
 
-    /* ==============================
-       CLOCK
-    ============================== */
+    /* ========================================
+       FIXED GRID
 
-    .clock-area {
-      display: flex;
-      flex-direction: column;
+       [ HOUR ][ MINUTE ]   |   [ BEAT ]
+       [      DATE       ]       [ LABEL]
+    ======================================== */
+
+    .widget-grid {
+      display: grid;
+
+      grid-template-columns:
+        var(--panel-width)
+        var(--panel-width)
+        3px
+        var(--panel-width);
+
+      grid-template-rows:
+        var(--panel-height)
+        20px;
+
+      column-gap: 14px;
+      row-gap: 12px;
+
       align-items: center;
-
-      gap: 12px;
+      justify-items: center;
     }
 
-    .clock {
-      display: flex;
-      align-items: center;
+    /* ========================================
+       SHARED PANEL
+    ======================================== */
 
-      gap: 12px;
-    }
-
-    .clock-panel {
+    .panel {
       position: relative;
 
-      width: 112px;
-      height: 132px;
+      width: var(--panel-width);
+      height: var(--panel-height);
 
-      padding: 15px;
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--panel-top) 0%,
+          #242321 49%,
+          var(--panel-bottom) 50%,
+          #202020 100%
+        );
 
       overflow: hidden;
 
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-
-      background: var(--panel);
-
-      border: 1px solid var(--panel-border);
-      border-radius: 11px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.025),
+        0 6px 18px rgba(0,0,0,0.10);
     }
+
+    /* flip-clock horizontal division */
 
     .clock-panel::after {
       content: "";
 
       position: absolute;
 
-      top: 50%;
       left: 0;
       right: 0;
+      top: 50%;
 
       height: 1px;
 
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255,255,255,0.08);
 
       pointer-events: none;
     }
 
-    .number {
+    /* ========================================
+       CLOCK PANELS
+    ======================================== */
+
+    .clock-panel {
+      display: flex;
+      flex-direction: column;
+
+      justify-content: flex-end;
+      align-items: flex-start;
+
+      padding: 15px 14px 14px;
+    }
+
+    .primary-number {
       position: relative;
       z-index: 1;
 
-      font-size: 70px;
-      line-height: 0.88;
+      margin: 0;
+
+      font-size: var(--number-size);
+      line-height: 0.86;
 
       font-weight: 700;
 
       letter-spacing: -4px;
 
+      color: var(--text);
+
       font-variant-numeric: tabular-nums;
     }
 
-    .panel-label {
+    .clock-label {
       position: relative;
       z-index: 1;
 
-      margin-top: 11px;
-
-      color: var(--muted);
+      margin-top: 13px;
 
       font-size: 10px;
+      line-height: 1;
+
       font-weight: 700;
 
-      letter-spacing: 0.15em;
+      letter-spacing: 0.14em;
 
-      text-transform: uppercase;
-    }
-
-    .date {
       color: var(--muted);
 
-      font-size: 10px;
-      font-weight: 600;
-
-      letter-spacing: 0.20em;
-
       text-transform: uppercase;
-
-      white-space: nowrap;
     }
 
-    /* ==============================
-       BEAT COUNT
-    ============================== */
-
-    .beat-section {
-      display: flex;
-      align-items: center;
-
-      gap: 28px;
-    }
+    /* ========================================
+       DIVIDER
+    ======================================== */
 
     .divider {
-      width: 1px;
-      height: 108px;
+      grid-column: 3;
+      grid-row: 1;
 
-      flex-shrink: 0;
+      width: 3px;
+      height: 92px;
 
-      background: var(--accent);
+      border-radius: 999px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(112,69,38,0.15) 0%,
+          #704526 20%,
+          #8a5731 50%,
+          #704526 80%,
+          rgba(112,69,38,0.15) 100%
+        );
+
+      align-self: center;
     }
 
-    .beat {
-      min-width: 100px;
+    /* ========================================
+       BEAT PANEL
+    ======================================== */
+
+    .beat-panel {
+      grid-column: 4;
+      grid-row: 1;
 
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
 
-    .beat-number {
-      font-size: 58px;
-      line-height: 0.9;
+    .beat-panel .primary-number {
+      /*
+        EXACT SAME SIZE AS CLOCK NUMBERS
+      */
+      font-size: var(--number-size);
 
-      font-weight: 600;
+      letter-spacing: -3px;
 
-      letter-spacing: -2px;
-
-      font-variant-numeric: tabular-nums;
+      transform: translateY(-1px);
     }
 
-    .beat-label {
-      margin-top: 14px;
+    /* ========================================
+       SHARED METADATA
+
+       DATE and BEAT COUNT are intentionally
+       identical in typography.
+    ======================================== */
+
+    .meta {
+      height: 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       color: var(--muted);
 
-      font-size: 9px;
+      font-size: var(--meta-size);
+      line-height: 1;
+
       font-weight: 600;
 
-      letter-spacing: 0.20em;
-
-      text-align: center;
-
-      white-space: nowrap;
+      letter-spacing: var(--meta-spacing);
 
       text-transform: uppercase;
+
+      white-space: nowrap;
     }
 
-    /* ==============================
-       SMALL EMBEDS
-    ============================== */
+    .date {
+      grid-column: 1 / 3;
+      grid-row: 2;
+    }
 
-    @media (max-width: 420px) {
+    .beat-label {
+      grid-column: 4;
+      grid-row: 2;
+    }
+
+    /* ========================================
+       SMALLER EMBEDS
+    ======================================== */
+
+    @media (max-width: 440px) {
+      :root {
+        --panel-width: 88px;
+        --panel-height: 108px;
+
+        --number-size: 54px;
+
+        --meta-size: 8px;
+        --meta-spacing: 0.14em;
+      }
+
       .widget {
-        gap: 17px;
-
-        padding: 0 8px 12px;
+        padding:
+          18px
+          6px
+          12px;
       }
 
-      .clock-area {
-        gap: 9px;
-      }
+      .widget-grid {
+        grid-template-columns:
+          var(--panel-width)
+          var(--panel-width)
+          3px
+          var(--panel-width);
 
-      .clock {
-        gap: 8px;
+        grid-template-rows:
+          var(--panel-height)
+          18px;
+
+        column-gap: 9px;
+        row-gap: 9px;
       }
 
       .clock-panel {
-        width: 82px;
-        height: 100px;
-
-        padding: 10px;
-
-        border-radius: 9px;
+        padding:
+          12px
+          10px
+          11px;
       }
 
-      .number {
-        font-size: 50px;
-
-        letter-spacing: -3px;
-      }
-
-      .panel-label {
-        margin-top: 8px;
+      .clock-label {
+        margin-top: 10px;
 
         font-size: 8px;
-      }
-
-      .date {
-        font-size: 8px;
-
-        letter-spacing: 0.15em;
-      }
-
-      .beat-section {
-        gap: 17px;
       }
 
       .divider {
-        height: 82px;
+        height: 76px;
       }
 
-      .beat {
-        min-width: 70px;
-      }
-
-      .beat-number {
-        font-size: 44px;
-      }
-
-      .beat-label {
-        margin-top: 11px;
-
-        font-size: 7px;
+      .meta {
+        height: 18px;
       }
     }
   </style>
 </head>
 
+
 <body>
 
   <main class="widget">
 
-    <section class="clock-area">
+    <section class="widget-grid">
 
-      <div class="clock">
-
-        <div class="clock-panel">
-
-          <div
-            class="number"
-            id="hour"
-          >
-            02
-          </div>
-
-          <div
-            class="panel-label"
-            id="ampm"
-          >
-            AM
-          </div>
-
-        </div>
-
-        <div class="clock-panel">
-
-          <div
-            class="number"
-            id="minute"
-          >
-            02
-          </div>
-
-          <div
-            class="panel-label"
-            id="weekday"
-          >
-            SAT
-          </div>
-
-        </div>
-
-      </div>
+      <!-- ====================================
+           HOUR
+      ===================================== -->
 
       <div
-        class="date"
-        id="date"
+        class="panel clock-panel"
+        style="grid-column: 1; grid-row: 1;"
       >
-        SEP 12, 2026
+
+        <div
+          class="primary-number"
+          id="hour"
+        >
+          02
+        </div>
+
+        <div
+          class="clock-label"
+          id="ampm"
+        >
+          AM
+        </div>
+
       </div>
 
-    </section>
 
-    <section class="beat-section">
+      <!-- ====================================
+           MINUTE
+      ===================================== -->
+
+      <div
+        class="panel clock-panel"
+        style="grid-column: 2; grid-row: 1;"
+      >
+
+        <div
+          class="primary-number"
+          id="minute"
+        >
+          05
+        </div>
+
+        <div
+          class="clock-label"
+          id="weekday"
+        >
+          SAT
+        </div>
+
+      </div>
+
+
+      <!-- ====================================
+           DIVIDER
+      ===================================== -->
 
       <div class="divider"></div>
 
-      <div class="beat">
+
+      <!-- ====================================
+           BEAT COUNT NUMBER
+      ===================================== -->
+
+      <div class="panel beat-panel">
 
         <div
-          class="beat-number"
+          class="primary-number"
           id="beatCount"
         >
           8
         </div>
 
-        <div class="beat-label">
-          BEAT COUNT
-        </div>
+      </div>
 
+
+      <!-- ====================================
+           DATE
+      ===================================== -->
+
+      <div
+        class="meta date"
+        id="date"
+      >
+        SEP 12, 2026
+      </div>
+
+
+      <!-- ====================================
+           BEAT COUNT LABEL
+      ===================================== -->
+
+      <div class="meta beat-label">
+        BEAT COUNT
       </div>
 
     </section>
 
   </main>
 
+
   <script>
     const TIME_ZONE = "Asia/Jakarta";
 
-    /* ==============================
+
+    /* ========================================
        BEAT COUNT
-    ============================== */
+    ======================================== */
 
     const params =
-      new URLSearchParams(window.location.search);
+      new URLSearchParams(
+        window.location.search
+      );
 
-    const value =
-      Number(params.get("beats"));
+    const requestedBeatCount =
+      Number(
+        params.get("beats")
+      );
+
 
     const beatCount =
-      Number.isFinite(value) && value >= 0
-        ? Math.floor(value)
+      Number.isFinite(requestedBeatCount) &&
+      requestedBeatCount >= 0
+
+        ? Math.floor(requestedBeatCount)
+
         : 8;
+
 
     document
       .getElementById("beatCount")
-      .textContent = beatCount;
+      .textContent =
+      beatCount;
 
-    /* ==============================
+
+
+    /* ========================================
        CLOCK
-    ============================== */
+    ======================================== */
 
     function updateClock() {
-      const now = new Date();
 
-      const parts =
+      const now =
+        new Date();
+
+
+      const timeParts =
         new Intl.DateTimeFormat(
           "en-US",
           {
             timeZone: TIME_ZONE,
+
             hour: "2-digit",
             minute: "2-digit",
+
             hour12: true
           }
         )
         .formatToParts(now);
 
-      const getPart = type =>
-        parts.find(
-          part => part.type === type
-        )?.value;
+
+      const getTimePart =
+        (type) => {
+
+          const part =
+            timeParts.find(
+              item =>
+                item.type === type
+            );
+
+          return part
+            ? part.value
+            : "";
+        };
+
+
+      /* HOUR */
 
       document
         .getElementById("hour")
         .textContent =
-        getPart("hour");
+        getTimePart("hour");
+
+
+      /* MINUTE */
 
       document
         .getElementById("minute")
         .textContent =
-        getPart("minute");
+        getTimePart("minute");
+
+
+      /* AM / PM */
 
       document
         .getElementById("ampm")
         .textContent =
-        getPart("dayPeriod");
+        getTimePart("dayPeriod")
+          .toUpperCase();
+
+
+      /* WEEKDAY */
 
       const weekday =
         new Intl.DateTimeFormat(
@@ -447,10 +577,14 @@
         .format(now)
         .toUpperCase();
 
+
       document
         .getElementById("weekday")
         .textContent =
         weekday;
+
+
+      /* MONTH */
 
       const month =
         new Intl.DateTimeFormat(
@@ -463,6 +597,9 @@
         .format(now)
         .toUpperCase();
 
+
+      /* DAY */
+
       const day =
         new Intl.DateTimeFormat(
           "en-US",
@@ -472,6 +609,9 @@
           }
         )
         .format(now);
+
+
+      /* YEAR */
 
       const year =
         new Intl.DateTimeFormat(
@@ -483,13 +623,18 @@
         )
         .format(now);
 
+
+      /* DATE */
+
       document
         .getElementById("date")
         .textContent =
         `${month} ${day}, ${year}`;
     }
 
+
     updateClock();
+
 
     setInterval(
       updateClock,
