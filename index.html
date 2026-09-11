@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
 
-  <title>CPO Widget</title>
+  <title>CPO Status</title>
 
   <style>
     :root {
+      --background: #191919;
       --text: #f1f1ef;
       --muted: #9b9a97;
-      --accent: #6b4328;
+      --accent: #704526;
     }
 
     * {
@@ -22,13 +24,16 @@
 
     html,
     body {
+      margin: 0;
       width: 100%;
       height: 100%;
-      margin: 0;
-      padding: 0;
       overflow: hidden;
+    }
 
-      background: transparent;
+    body {
+      background: var(--background);
+
+      color: var(--text);
 
       font-family:
         Inter,
@@ -37,52 +42,54 @@
         "Segoe UI",
         sans-serif;
 
-      color: var(--text);
-    }
-
-    body {
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .widget {
-      width: 100%;
-      padding: 10px 14px;
+      width: min(100%, 420px);
 
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
+      padding: 18px 22px;
+
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
 
       gap: 24px;
     }
 
+    .left {
+      min-width: 0;
+    }
+
     .time {
-      font-size: clamp(36px, 11vw, 52px);
+      font-size: 46px;
       font-weight: 500;
-      line-height: 0.95;
-      letter-spacing: -2px;
+      line-height: 0.9;
+
+      letter-spacing: -2.5px;
 
       font-variant-numeric: tabular-nums;
     }
 
     .date {
-      margin-top: 9px;
-
-      font-size: clamp(9px, 2.5vw, 11px);
-      font-weight: 600;
-
-      letter-spacing: 0.12em;
+      margin-top: 13px;
 
       color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 600;
+
+      letter-spacing: 0.15em;
 
       white-space: nowrap;
     }
 
     .right {
-      min-width: 72px;
+      min-width: 92px;
 
-      padding-left: 20px;
+      padding-left: 22px;
 
       border-left: 1px solid var(--accent);
 
@@ -90,39 +97,54 @@
     }
 
     .count {
-      font-size: clamp(32px, 10vw, 46px);
+      font-size: 38px;
       font-weight: 500;
-      line-height: 0.95;
+      line-height: 0.9;
+
+      letter-spacing: -1px;
 
       font-variant-numeric: tabular-nums;
     }
 
     .label {
-      margin-top: 9px;
-
-      font-size: 10px;
-      font-weight: 600;
-
-      letter-spacing: 0.14em;
+      margin-top: 13px;
 
       color: var(--muted);
+
+      font-size: 9px;
+      font-weight: 600;
+
+      letter-spacing: 0.16em;
 
       white-space: nowrap;
     }
 
-    @media (max-width: 320px) {
+    @media (max-width: 360px) {
       .widget {
-        gap: 14px;
-        padding-left: 8px;
-        padding-right: 8px;
+        padding: 16px;
+        gap: 15px;
+      }
+
+      .time {
+        font-size: 38px;
+      }
+
+      .count {
+        font-size: 32px;
       }
 
       .right {
-        padding-left: 14px;
+        min-width: 76px;
+        padding-left: 15px;
       }
 
       .date {
-        letter-spacing: 0.07em;
+        font-size: 8px;
+        letter-spacing: 0.1em;
+      }
+
+      .label {
+        font-size: 8px;
       }
     }
   </style>
@@ -133,80 +155,140 @@
   <main class="widget">
 
     <section class="left">
-      <div class="time" id="time">00:00</div>
 
-      <div class="date" id="date">
-        SATURDAY · SEPTEMBER 12, 2026
+      <div
+        class="time"
+        id="time"
+      >
+        00:00
       </div>
+
+      <div
+        class="date"
+        id="date"
+      >
+        SAT · SEP 12
+      </div>
+
     </section>
 
+
     <section class="right">
-      <div class="count" id="beatCount">8</div>
+
+      <div
+        class="count"
+        id="beatCount"
+      >
+        8
+      </div>
 
       <div class="label">
         BEAT COUNT
       </div>
+
     </section>
 
   </main>
 
+
   <script>
+
     const TIME_ZONE = "Asia/Jakarta";
 
-    // =========================
-    // BEAT COUNT
-    // =========================
 
-    const params = new URLSearchParams(window.location.search);
-    const beatParam = Number(params.get("beats"));
+    // ==============================
+    // BEAT COUNT
+    // ==============================
+
+    const params =
+      new URLSearchParams(window.location.search);
+
+    const beatParam =
+      Number(params.get("beats"));
 
     const beatCount =
-      Number.isFinite(beatParam) && beatParam >= 0
+      Number.isFinite(beatParam) &&
+      beatParam >= 0
         ? Math.floor(beatParam)
         : 8;
 
-    document.getElementById("beatCount").textContent = beatCount;
+    document
+      .getElementById("beatCount")
+      .textContent = beatCount;
 
 
-    // =========================
-    // CLOCK + DATE
-    // =========================
+
+    // ==============================
+    // CLOCK
+    // ==============================
 
     function updateClock() {
+
       const now = new Date();
 
-      const time = new Intl.DateTimeFormat("en-GB", {
-        timeZone: TIME_ZONE,
-        hour: "2-digit",
-        minute: "2-digit",
-        hourCycle: "h23"
-      }).format(now);
 
-      const weekday = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        weekday: "long"
-      })
+      const time =
+        new Intl.DateTimeFormat(
+          "en-GB",
+          {
+            timeZone: TIME_ZONE,
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h23"
+          }
+        ).format(now);
+
+
+      const weekday =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            weekday: "short"
+          }
+        )
         .format(now)
         .toUpperCase();
 
-      const calendarDate = new Intl.DateTimeFormat("en-US", {
-        timeZone: TIME_ZONE,
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-      })
+
+      const month =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            month: "short"
+          }
+        )
         .format(now)
         .toUpperCase();
 
-      document.getElementById("time").textContent = time;
 
-      document.getElementById("date").textContent =
-        `${weekday} · ${calendarDate}`;
+      const day =
+        new Intl.DateTimeFormat(
+          "en-US",
+          {
+            timeZone: TIME_ZONE,
+            day: "2-digit"
+          }
+        ).format(now);
+
+
+      document
+        .getElementById("time")
+        .textContent = time;
+
+
+      document
+        .getElementById("date")
+        .textContent =
+          `${weekday} · ${month} ${day}`;
     }
+
 
     updateClock();
 
     setInterval(updateClock, 1000);
+
   </script>
 
 </body>
