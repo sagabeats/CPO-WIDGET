@@ -2,20 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
-
-  <title>CPO Status</title>
+  <title>CPO Widget</title>
 
   <style>
     :root {
-      --background: #191919;
-      --text: #f1f1ef;
-      --muted: #9b9a97;
-      --accent: #704526;
+      --text: #f4f1eb;
+      --muted: #b7aa9b;
+      --soft: rgba(255, 255, 255, 0.05);
+      --soft-border: rgba(255, 255, 255, 0.08);
+      --accent: #7a4c2b;
     }
 
     * {
@@ -27,269 +26,293 @@
       margin: 0;
       width: 100%;
       height: 100%;
+      background: transparent;
       overflow: hidden;
-    }
-
-    body {
-      background: var(--background);
-
-      color: var(--text);
-
       font-family:
         Inter,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+      color: var(--text);
+    }
 
+    body {
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .widget {
-      width: min(100%, 420px);
-
-      padding: 18px 22px;
-
-      display: grid;
-      grid-template-columns: 1fr auto;
+      width: 100%;
+      max-width: 430px;
+      padding: 12px 10px;
+      display: flex;
       align-items: center;
-
-      gap: 24px;
+      justify-content: flex-start;
+      gap: 22px;
     }
 
-    .left {
+    .time-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       min-width: 0;
     }
 
-    .time {
-      font-size: 46px;
-      font-weight: 500;
+    .clock-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .clock-panels {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel {
+      width: 104px;
+      height: 120px;
+      border-radius: 14px;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.05) 0%,
+          rgba(255,255,255,0.03) 49%,
+          rgba(0,0,0,0.18) 50%,
+          rgba(255,255,255,0.02) 100%
+        );
+      border: 1px solid var(--soft-border);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.03),
+        0 8px 20px rgba(0,0,0,0.18);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 14px 14px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: rgba(255,255,255,0.10);
+    }
+
+    .digit {
+      font-size: 68px;
       line-height: 0.9;
-
-      letter-spacing: -2.5px;
-
+      font-weight: 800;
+      letter-spacing: -4px;
       font-variant-numeric: tabular-nums;
+    }
+
+    .mini-label {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text);
     }
 
     .date {
-      margin-top: 13px;
-
-      color: var(--muted);
-
       font-size: 10px;
       font-weight: 600;
-
-      letter-spacing: 0.15em;
-
-      white-space: nowrap;
-    }
-
-    .right {
-      min-width: 92px;
-
-      padding-left: 22px;
-
-      border-left: 1px solid var(--accent);
-
-      text-align: right;
-    }
-
-    .count {
-      font-size: 38px;
-      font-weight: 500;
-      line-height: 0.9;
-
-      letter-spacing: -1px;
-
-      font-variant-numeric: tabular-nums;
-    }
-
-    .label {
-      margin-top: 13px;
-
+      letter-spacing: 0.22em;
       color: var(--muted);
-
-      font-size: 9px;
-      font-weight: 600;
-
-      letter-spacing: 0.16em;
-
+      text-transform: uppercase;
       white-space: nowrap;
     }
 
-    @media (max-width: 360px) {
+    .beat-wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-shrink: 0;
+    }
+
+    .divider {
+      width: 1px;
+      height: 95px;
+      background: var(--accent);
+      opacity: 0.95;
+    }
+
+    .beat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+    }
+
+    .beat-count {
+      font-size: 58px;
+      line-height: 0.9;
+      font-weight: 700;
+      letter-spacing: -2px;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    .beat-label {
+      margin-top: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    @media (max-width: 420px) {
       .widget {
-        padding: 16px;
-        gap: 15px;
+        gap: 14px;
+        padding: 10px 6px;
       }
 
-      .time {
-        font-size: 38px;
+      .clock-panels {
+        gap: 8px;
       }
 
-      .count {
-        font-size: 32px;
+      .panel {
+        width: 84px;
+        height: 100px;
+        border-radius: 12px;
+        padding: 12px 10px 10px;
       }
 
-      .right {
-        min-width: 76px;
-        padding-left: 15px;
+      .digit {
+        font-size: 54px;
+        letter-spacing: -3px;
       }
 
-      .date {
-        font-size: 8px;
-        letter-spacing: 0.1em;
+      .mini-label {
+        font-size: 12px;
       }
 
-      .label {
-        font-size: 8px;
+      .divider {
+        height: 82px;
+      }
+
+      .beat-count {
+        font-size: 46px;
+      }
+
+      .date,
+      .beat-label {
+        font-size: 9px;
       }
     }
   </style>
 </head>
-
 <body>
-
   <main class="widget">
+    <section class="time-group">
+      <div class="clock-stack">
+        <div class="clock-panels">
+          <div class="panel">
+            <div class="digit" id="hour">01</div>
+            <div class="mini-label" id="ampm">PM</div>
+          </div>
 
-    <section class="left">
+          <div class="panel">
+            <div class="digit" id="minute">10</div>
+            <div class="mini-label" id="weekday">SAT</div>
+          </div>
+        </div>
 
-      <div
-        class="time"
-        id="time"
-      >
-        00:00
+        <div class="date" id="date">
+          SEP 12, 2026
+        </div>
       </div>
-
-      <div
-        class="date"
-        id="date"
-      >
-        SAT · SEP 12
-      </div>
-
     </section>
 
+    <section class="beat-wrap">
+      <div class="divider"></div>
 
-    <section class="right">
-
-      <div
-        class="count"
-        id="beatCount"
-      >
-        8
+      <div class="beat-box">
+        <div class="beat-count" id="beatCount">8</div>
+        <div class="beat-label">BEAT COUNT</div>
       </div>
-
-      <div class="label">
-        BEAT COUNT
-      </div>
-
     </section>
-
   </main>
 
-
   <script>
-
     const TIME_ZONE = "Asia/Jakarta";
 
-
-    // ==============================
-    // BEAT COUNT
-    // ==============================
-
-    const params =
-      new URLSearchParams(window.location.search);
-
-    const beatParam =
-      Number(params.get("beats"));
-
+    // beat count from URL
+    const params = new URLSearchParams(window.location.search);
+    const beatParam = Number(params.get("beats"));
     const beatCount =
-      Number.isFinite(beatParam) &&
-      beatParam >= 0
+      Number.isFinite(beatParam) && beatParam >= 0
         ? Math.floor(beatParam)
         : 8;
 
-    document
-      .getElementById("beatCount")
-      .textContent = beatCount;
-
-
-
-    // ==============================
-    // CLOCK
-    // ==============================
+    document.getElementById("beatCount").textContent = beatCount;
 
     function updateClock() {
-
       const now = new Date();
 
+      const hour24 = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        hour: "2-digit",
+        hour12: false
+      }).format(now);
 
-      const time =
-        new Intl.DateTimeFormat(
-          "en-GB",
-          {
-            timeZone: TIME_ZONE,
-            hour: "2-digit",
-            minute: "2-digit",
-            hourCycle: "h23"
-          }
-        ).format(now);
+      const minute = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        minute: "2-digit"
+      }).format(now);
 
+      const hour12 = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        hour: "2-digit",
+        hour12: true
+      }).format(now);
 
-      const weekday =
-        new Intl.DateTimeFormat(
-          "en-US",
-          {
-            timeZone: TIME_ZONE,
-            weekday: "short"
-          }
-        )
-        .format(now)
-        .toUpperCase();
+      const ampm = hour12.toUpperCase().includes("AM") ? "AM" : "PM";
 
+      const weekday = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        weekday: "short"
+      }).format(now).toUpperCase();
 
-      const month =
-        new Intl.DateTimeFormat(
-          "en-US",
-          {
-            timeZone: TIME_ZONE,
-            month: "short"
-          }
-        )
-        .format(now)
-        .toUpperCase();
+      const month = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        month: "short"
+      }).format(now).toUpperCase();
 
+      const day = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        day: "2-digit"
+      }).format(now);
 
-      const day =
-        new Intl.DateTimeFormat(
-          "en-US",
-          {
-            timeZone: TIME_ZONE,
-            day: "2-digit"
-          }
-        ).format(now);
+      const year = new Intl.DateTimeFormat("en-US", {
+        timeZone: TIME_ZONE,
+        year: "numeric"
+      }).format(now);
 
-
-      document
-        .getElementById("time")
-        .textContent = time;
-
-
-      document
-        .getElementById("date")
-        .textContent =
-          `${weekday} · ${month} ${day}`;
+      document.getElementById("hour").textContent = hour24;
+      document.getElementById("minute").textContent = minute;
+      document.getElementById("ampm").textContent = ampm;
+      document.getElementById("weekday").textContent = weekday;
+      document.getElementById("date").textContent = `${month} ${day}, ${year}`;
     }
 
-
     updateClock();
-
     setInterval(updateClock, 1000);
-
   </script>
-
 </body>
 </html>
