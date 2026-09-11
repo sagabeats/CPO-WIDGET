@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
   <title>CPO Widget</title>
 
   <style>
     :root {
       --bg: #191919;
-      --panel: #242424;
-      --panel-border: #343434;
+
+      --panel: #222222;
+      --panel-border: #383838;
 
       --text: #f1f1ef;
-      --muted: #9f9a94;
+      --muted: #b0a69d;
 
       --accent: #704526;
     }
@@ -49,44 +54,49 @@
       justify-content: center;
     }
 
+    /* ==============================
+       MAIN WIDGET
+    ============================== */
+
     .widget {
       width: 100%;
-      max-width: 500px;
+      max-width: 560px;
 
-      padding: 20px;
+      padding: 18px 22px;
 
       display: flex;
       justify-content: center;
       align-items: center;
 
-      gap: 26px;
+      gap: 34px;
     }
 
-    /* CLOCK */
+    /* ==============================
+       CLOCK
+    ============================== */
 
     .clock-area {
       display: flex;
       flex-direction: column;
       align-items: center;
 
-      gap: 11px;
+      gap: 12px;
     }
 
     .clock {
       display: flex;
-      gap: 10px;
+      align-items: center;
+
+      gap: 12px;
     }
 
     .clock-panel {
       position: relative;
 
-      width: 92px;
-      height: 112px;
+      width: 112px;
+      height: 132px;
 
-      background: var(--panel);
-
-      border: 1px solid var(--panel-border);
-      border-radius: 10px;
+      padding: 15px;
 
       overflow: hidden;
 
@@ -94,81 +104,104 @@
       flex-direction: column;
       justify-content: flex-end;
 
-      padding: 13px;
+      background: var(--panel);
+
+      border: 1px solid var(--panel-border);
+      border-radius: 11px;
     }
+
+    /* horizontal split line */
 
     .clock-panel::after {
       content: "";
 
       position: absolute;
 
+      top: 50%;
       left: 0;
       right: 0;
-      top: 50%;
 
       height: 1px;
 
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
+
+      pointer-events: none;
     }
 
     .number {
-      font-size: 58px;
-      line-height: 0.9;
+      position: relative;
+      z-index: 1;
+
+      font-size: 70px;
+      line-height: 0.88;
 
       font-weight: 700;
-      letter-spacing: -3px;
+
+      letter-spacing: -4px;
 
       font-variant-numeric: tabular-nums;
     }
 
     .panel-label {
-      margin-top: 10px;
+      position: relative;
+      z-index: 1;
 
-      font-size: 9px;
+      margin-top: 11px;
+
+      color: var(--muted);
+
+      font-size: 10px;
       font-weight: 700;
 
       letter-spacing: 0.15em;
 
-      color: var(--muted);
+      text-transform: uppercase;
     }
 
     .date {
-      font-size: 9px;
+      color: var(--muted);
+
+      font-size: 10px;
       font-weight: 600;
 
-      letter-spacing: 0.18em;
+      letter-spacing: 0.20em;
 
-      color: var(--muted);
+      text-transform: uppercase;
 
       white-space: nowrap;
     }
 
-    /* BEAT COUNT */
+    /* ==============================
+       BEAT COUNT
+    ============================== */
 
     .beat-section {
       display: flex;
       align-items: center;
 
-      gap: 25px;
+      gap: 28px;
     }
 
     .divider {
       width: 1px;
-      height: 91px;
+      height: 108px;
+
+      flex-shrink: 0;
 
       background: var(--accent);
     }
 
     .beat {
-      min-width: 78px;
+      min-width: 100px;
 
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
     }
 
     .beat-number {
-      font-size: 50px;
+      font-size: 58px;
       line-height: 0.9;
 
       font-weight: 600;
@@ -183,43 +216,84 @@
 
       color: var(--muted);
 
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 600;
 
-      letter-spacing: 0.19em;
+      letter-spacing: 0.20em;
+
+      text-align: center;
 
       white-space: nowrap;
+
+      text-transform: uppercase;
     }
 
-    /* SMALL NOTION EMBEDS */
+    /* ==============================
+       SMALL NOTION EMBEDS
+    ============================== */
 
     @media (max-width: 420px) {
       .widget {
-        gap: 16px;
-        padding: 12px;
+        gap: 17px;
+
+        padding: 12px 8px;
+      }
+
+      .clock-area {
+        gap: 9px;
+      }
+
+      .clock {
+        gap: 8px;
       }
 
       .clock-panel {
-        width: 76px;
-        height: 96px;
+        width: 82px;
+        height: 100px;
 
         padding: 10px;
+
+        border-radius: 9px;
       }
 
       .number {
-        font-size: 47px;
+        font-size: 50px;
+
+        letter-spacing: -3px;
+      }
+
+      .panel-label {
+        margin-top: 8px;
+
+        font-size: 8px;
+      }
+
+      .date {
+        font-size: 8px;
+
+        letter-spacing: 0.15em;
       }
 
       .beat-section {
-        gap: 16px;
+        gap: 17px;
       }
 
       .divider {
-        height: 78px;
+        height: 82px;
+      }
+
+      .beat {
+        min-width: 70px;
       }
 
       .beat-number {
-        font-size: 41px;
+        font-size: 44px;
+      }
+
+      .beat-label {
+        margin-top: 11px;
+
+        font-size: 7px;
       }
     }
   </style>
@@ -230,40 +304,69 @@
 
   <main class="widget">
 
+    <!-- CLOCK -->
+
     <section class="clock-area">
 
       <div class="clock">
 
+        <!-- HOUR -->
+
         <div class="clock-panel">
-          <div class="number" id="hour">
+
+          <div
+            class="number"
+            id="hour"
+          >
             01
           </div>
 
-          <div class="panel-label" id="ampm">
+          <div
+            class="panel-label"
+            id="ampm"
+          >
             AM
           </div>
+
         </div>
 
 
+        <!-- MINUTE -->
+
         <div class="clock-panel">
-          <div class="number" id="minute">
-            33
+
+          <div
+            class="number"
+            id="minute"
+          >
+            45
           </div>
 
-          <div class="panel-label" id="weekday">
+          <div
+            class="panel-label"
+            id="weekday"
+          >
             SAT
           </div>
+
         </div>
 
       </div>
 
 
-      <div class="date" id="date">
+      <!-- DATE -->
+
+      <div
+        class="date"
+        id="date"
+      >
         SEP 12, 2026
       </div>
 
     </section>
 
+
+    <!-- BEAT COUNT -->
 
     <section class="beat-section">
 
@@ -272,7 +375,10 @@
 
       <div class="beat">
 
-        <div class="beat-number" id="beatCount">
+        <div
+          class="beat-number"
+          id="beatCount"
+        >
           8
         </div>
 
@@ -292,7 +398,9 @@
     const TIME_ZONE = "Asia/Jakarta";
 
 
-    /* BEAT COUNT */
+    /* ==============================
+       BEAT COUNT
+    ============================== */
 
     const params =
       new URLSearchParams(window.location.search);
@@ -311,10 +419,11 @@
 
 
 
-    /* CLOCK */
+    /* ==============================
+       CLOCK
+    ============================== */
 
     function updateClock() {
-
       const now = new Date();
 
 
@@ -339,11 +448,15 @@
         )?.value;
 
 
+      /* HOUR */
+
       document
         .getElementById("hour")
         .textContent =
         getPart("hour");
 
+
+      /* MINUTE */
 
       document
         .getElementById("minute")
@@ -351,11 +464,15 @@
         getPart("minute");
 
 
+      /* AM / PM */
+
       document
         .getElementById("ampm")
         .textContent =
         getPart("dayPeriod");
 
+
+      /* WEEKDAY */
 
       const weekday =
         new Intl.DateTimeFormat(
@@ -375,6 +492,8 @@
         weekday;
 
 
+      /* MONTH */
+
       const month =
         new Intl.DateTimeFormat(
           "en-US",
@@ -387,6 +506,8 @@
         .toUpperCase();
 
 
+      /* DAY */
+
       const day =
         new Intl.DateTimeFormat(
           "en-US",
@@ -398,6 +519,8 @@
         .format(now);
 
 
+      /* YEAR */
+
       const year =
         new Intl.DateTimeFormat(
           "en-US",
@@ -408,6 +531,8 @@
         )
         .format(now);
 
+
+      /* DATE */
 
       document
         .getElementById("date")
@@ -425,4 +550,5 @@
   </script>
 
 </body>
+
 </html>
